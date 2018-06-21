@@ -1,0 +1,20 @@
+    events {
+        worker_connections  4096;
+    }
+
+    http {
+        upstream fn-server {
+            server %UPSTREAM%;
+        }
+
+        server {
+            listen 80;
+
+            location / {
+                proxy_pass http://fn-server/%ROUTE%;
+                proxy_set_header X-Real-IP  $remote_addr;
+                proxy_set_header X-Forwarded-For $remote_addr;
+                proxy_set_header Host $host;
+            }
+        }
+    }
